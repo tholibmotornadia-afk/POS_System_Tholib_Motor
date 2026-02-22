@@ -30,19 +30,6 @@ export const ReceiptContent = forwardRef<HTMLDivElement, ReceiptContentProps>(({
             className="w-full max-w-[320px] mx-auto bg-white dark:bg-[#22272B] border-[#DFE1E6] dark:border-[#2C333A] shadow-none print:shadow-none print:border-none print:max-w-none"
             ref={ref}
         >
-            <style jsx global>{`
-        @media print {
-          .receipt-print-container {
-            width: 80mm !important;
-            padding: 4mm !important;
-            margin: 0 !important;
-          }
-          @page {
-            size: 80mm auto;
-            margin: 0;
-          }
-        }
-      `}</style>
 
             <div className="receipt-print-container">
                 <CardHeader className="text-center pb-4 border-b border-dashed border-[#DFE1E6] dark:border-[#2C333A] px-4">

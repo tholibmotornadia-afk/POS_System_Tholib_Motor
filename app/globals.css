@@ -85,6 +85,17 @@
 }
 
 @media print {
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
+
+  .receipt-print-container {
+    width: 80mm !important;
+    padding: 4mm !important;
+    margin: 0 !important;
+  }
+
   .print\:w-full {
     width: 100%;
   }

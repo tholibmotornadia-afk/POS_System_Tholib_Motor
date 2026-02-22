@@ -107,29 +107,7 @@ export default function Detail({
   // JSX rendering
   return (
     <div>
-      {/* Styling for print media */}
-      <style jsx>{`
-        @media print {
-          @page {
-            size: 80mm 100mm; /* Sesuaikan dengan ukuran kertas thermal Anda */
-          }
-          /* Gaya cetakan lainnya */
-          .print-card {
-            width: 80mm;
-            max-width: 80mm;
-            padding: 4mm;
-            border: none;
-            font-size: 12px;
-            font-family: 'Courier New', Courier, monospace;
-          }
-          .print-card-header {
-            background-color: #f0f0f0;
-          }
-          .print-card-content {
-            padding: 0;
-          }
-        }
-      `}</style>
+
       {/* Card component for displaying receipt details */}
       <Card
         className="print-card overflow-hidden print:w-full print:max-w-[80mm] print:p-4 print:border print:text-[12px] print:font-mono"
