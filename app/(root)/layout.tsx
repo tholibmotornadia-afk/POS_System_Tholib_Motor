@@ -12,7 +12,7 @@ import {
   BarChart3,
   Sun,
   Moon,
-
+  Settings,
   ChevronsLeft,
   ChevronsRight,
 } from 'lucide-react';
@@ -26,6 +26,7 @@ const navItems = [
   { name: 'Kasir', href: '/orders', icon: CreditCard },
   { name: 'Stok Barang', href: '/product', icon: Package },
   { name: 'Riwayat', href: '/records', icon: BarChart3 },
+  { name: 'Pengaturan', href: '/settings', icon: Settings },
 ];
 
 export default function RootLayout({ children }: RootLayoutProps) {
