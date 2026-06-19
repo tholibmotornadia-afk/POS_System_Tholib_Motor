@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Settings, Printer, Store } from 'lucide-react';
 
-const settingsNav = [
+const settingsNav: { name: string; href: string; icon: any }[] = [
   { name: 'Hardware', href: '/settings/hardware', icon: Printer },
   { name: 'Kategori Barang', href: '/settings/category', icon: Store },
 ];
@@ -30,21 +30,6 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
           {settingsNav.map((item) => {
             const Icon = item.icon;
             const isActive = pathname.startsWith(item.href);
-
-            if (item.disabled) {
-              return (
-                <div
-                  key={item.name}
-                  className="flex items-center gap-3 px-4 py-2.5 rounded-md text-sm font-medium text-[#8C9BAB] dark:text-[#626F86] cursor-not-allowed opacity-60"
-                >
-                  <Icon className="w-5 h-5 shrink-0" />
-                  <span>{item.name}</span>
-                  <span className="ml-auto px-1.5 py-0.5 bg-[#EBECF0] dark:bg-[#2C333A] text-[#626F86] dark:text-[#8C9BAB] text-[9px] font-bold rounded uppercase tracking-wider">
-                    Segera
-                  </span>
-                </div>
-              );
-            }
 
             return (
               <Link
