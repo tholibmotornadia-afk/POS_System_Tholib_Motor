@@ -3,13 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Settings, Printer, Store, Users, Building2 } from 'lucide-react';
+import { Settings, Printer, Store } from 'lucide-react';
 
 const settingsNav = [
   { name: 'Hardware', href: '/settings/hardware', icon: Printer },
   { name: 'Kategori Barang', href: '/settings/category', icon: Store },
-  { name: 'Info Toko', href: '/settings/store', icon: Building2, disabled: true },
-  { name: 'Pengguna', href: '/settings/users', icon: Users, disabled: true },
 ];
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
