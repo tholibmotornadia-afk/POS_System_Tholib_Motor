@@ -100,10 +100,10 @@ export function JiraDashboard() {
   return (
     <div className="h-full overflow-y-auto bg-[#F4F5F7] dark:bg-[#1D2125]">
       {/* Page Title */}
-      <div className="h-14 flex items-center justify-between px-6 border-b border-[#DFE1E6] dark:border-[#2C333A] bg-white dark:bg-[#22272B] sticky top-0 z-10 shadow-sm">
+        <div className="h-10 md:h-14 flex items-center justify-between px-4 md:px-6 border-b border-[#DFE1E6] dark:border-[#2C333A] bg-white dark:bg-[#22272B] sticky top-0 z-10 shadow-sm">
         <div className="flex items-center gap-2">
-          <LayoutDashboard className="w-5 h-5 text-[#0052CC] dark:text-[#579DFF]" />
-          <h1 className="text-base font-bold text-[#172B4D] dark:text-white">Dashboard</h1>
+          <LayoutDashboard className="w-4 h-4 md:w-5 md:h-5 text-[#0052CC] dark:text-[#579DFF]" />
+          <h1 className="text-sm md:text-base font-bold text-[#172B4D] dark:text-white">Dashboard</h1>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#F4F5F7] dark:bg-[#1D2125] rounded text-[11px] font-bold text-[#626F86] dark:text-[#8C9BAB]">
@@ -119,51 +119,45 @@ export function JiraDashboard() {
         </div>
       </div>
 
-      <div className="p-6 space-y-6">
+      <div className="p-3 md:p-6 space-y-4 md:space-y-6">
         {/* KPI Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white dark:bg-[#22272B] p-6 rounded-lg border border-[#DFE1E6] dark:border-[#2C333A] shadow-sm hover:shadow-md transition-shadow group">
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-[#DEEBFF] dark:bg-[#0747A6]/20 rounded-lg group-hover:scale-110 transition-transform">
-                <Banknote className="w-5 h-5 text-[#0052CC] dark:text-[#579DFF]" />
-              </div>
+        <div className="grid grid-cols-3 gap-2 md:gap-4 lg:gap-6">
+          <div className="bg-white dark:bg-[#22272B] p-3 md:p-6 rounded-lg border border-[#DFE1E6] dark:border-[#2C333A] shadow-sm">
+            <div className="p-1.5 md:p-2 bg-[#DEEBFF] dark:bg-[#0747A6]/20 rounded-lg w-fit mb-2 md:mb-4">
+              <Banknote className="w-4 h-4 md:w-5 md:h-5 text-[#0052CC] dark:text-[#579DFF]" />
             </div>
-            <p className="text-xs font-bold text-[#626F86] dark:text-[#8C9BAB] uppercase tracking-wider mb-1">Total Omset</p>
-            <h3 className="text-2xl font-black text-[#172B4D] dark:text-white">Rp {kpis?.totalAmount?.toLocaleString('id-ID') ?? 0}</h3>
+            <p className="text-[9px] md:text-xs font-bold text-[#626F86] dark:text-[#8C9BAB] uppercase tracking-wider mb-0.5 md:mb-1">Omset</p>
+            <h3 className="text-sm md:text-2xl font-black text-[#172B4D] dark:text-white truncate">Rp {kpis?.totalAmount?.toLocaleString('id-ID') ?? 0}</h3>
           </div>
 
-          <div className="bg-white dark:bg-[#22272B] p-6 rounded-lg border border-[#DFE1E6] dark:border-[#2C333A] shadow-sm hover:shadow-md transition-shadow group">
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-[#E3FCEF] dark:bg-[#1C3329]/20 rounded-lg group-hover:scale-110 transition-transform">
-                <ShoppingCart className="w-5 h-5 text-[#36B37E]" />
-              </div>
+          <div className="bg-white dark:bg-[#22272B] p-3 md:p-6 rounded-lg border border-[#DFE1E6] dark:border-[#2C333A] shadow-sm">
+            <div className="p-1.5 md:p-2 bg-[#E3FCEF] dark:bg-[#1C3329]/20 rounded-lg w-fit mb-2 md:mb-4">
+              <ShoppingCart className="w-4 h-4 md:w-5 md:h-5 text-[#36B37E]" />
             </div>
-            <p className="text-xs font-bold text-[#626F86] dark:text-[#8C9BAB] uppercase tracking-wider mb-1">Barang Terjual</p>
-            <h3 className="text-2xl font-black text-[#172B4D] dark:text-white">{kpis?.totalQuantity ?? 0} <span className="text-sm font-normal text-[#626F86]">Pcs</span></h3>
+            <p className="text-[9px] md:text-xs font-bold text-[#626F86] dark:text-[#8C9BAB] uppercase tracking-wider mb-0.5 md:mb-1">Terjual</p>
+            <h3 className="text-sm md:text-2xl font-black text-[#172B4D] dark:text-white">{kpis?.totalQuantity ?? 0} <span className="text-[10px] md:text-sm font-normal text-[#626F86]">Pcs</span></h3>
           </div>
 
-          <div className="bg-white dark:bg-[#22272B] p-6 rounded-lg border border-[#DFE1E6] dark:border-[#2C333A] shadow-sm hover:shadow-md transition-shadow group">
-            <div className="flex justify-between items-start mb-4">
-              <div className="p-2 bg-[#FFF0B3] dark:bg-[#3D2E00]/20 rounded-lg group-hover:scale-110 transition-transform">
-                <Package className="w-5 h-5 text-[#974F0C] dark:text-[#FFE380]" />
-              </div>
-              {(kpis?.lowStockCount ?? 0) > 0 && (
-                <span className="flex items-center text-[10px] font-bold text-[#BF2600] bg-[#FFEBE6] dark:bg-[#4A1D19] px-2 py-0.5 rounded-full uppercase">
-                  <AlertTriangle className="w-3 h-3 mr-0.5" /> {kpis?.lowStockCount} Warning
-                </span>
-              )}
+          <div className="bg-white dark:bg-[#22272B] p-3 md:p-6 rounded-lg border border-[#DFE1E6] dark:border-[#2C333A] shadow-sm relative">
+            <div className="p-1.5 md:p-2 bg-[#FFF0B3] dark:bg-[#3D2E00]/20 rounded-lg w-fit mb-2 md:mb-4">
+              <Package className="w-4 h-4 md:w-5 md:h-5 text-[#974F0C] dark:text-[#FFE380]" />
             </div>
-            <p className="text-xs font-bold text-[#626F86] dark:text-[#8C9BAB] uppercase tracking-wider mb-1">Total Item Stok</p>
-            <h3 className="text-2xl font-black text-[#172B4D] dark:text-white">{kpis?.totalStock ?? 0} <span className="text-sm font-normal text-[#626F86]">Barang</span></h3>
+            {(kpis?.lowStockCount ?? 0) > 0 && (
+              <span className="absolute top-2 right-2 md:static md:float-right flex items-center text-[8px] md:text-[10px] font-bold text-[#BF2600] bg-[#FFEBE6] dark:bg-[#4A1D19] px-1.5 md:px-2 py-0.5 rounded-full">
+                <AlertTriangle className="w-2.5 h-2.5 md:w-3 md:h-3 mr-0.5" /> {kpis?.lowStockCount}
+              </span>
+            )}
+            <p className="text-[9px] md:text-xs font-bold text-[#626F86] dark:text-[#8C9BAB] uppercase tracking-wider mb-0.5 md:mb-1 clear-both">Stok</p>
+            <h3 className="text-sm md:text-2xl font-black text-[#172B4D] dark:text-white">{kpis?.totalStock ?? 0} <span className="text-[10px] md:text-sm font-normal text-[#626F86]">Barang</span></h3>
           </div>
         </div>
 
         {/* Charts & Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
           {/* Revenue Chart */}
           <div className="lg:col-span-2 bg-white dark:bg-[#22272B] border border-[#DFE1E6] dark:border-[#2C333A] rounded-lg shadow-sm flex flex-col">
-            <div className="px-6 py-4 border-b border-[#DFE1E6] dark:border-[#2C333A] flex items-center justify-between">
-              <h3 className="text-sm font-bold text-[#172B4D] dark:text-white uppercase tracking-tight">Tren Pendapatan</h3>
+            <div className="px-4 md:px-6 py-3 md:py-4 border-b border-[#DFE1E6] dark:border-[#2C333A] flex items-center justify-between">
+              <h3 className="text-xs md:text-sm font-bold text-[#172B4D] dark:text-white uppercase tracking-tight">Tren Pendapatan</h3>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-[#0052CC]" />
                 <span className="text-[10px] font-bold text-[#626F86] dark:text-[#8C9BAB]">Gross Revenue</span>
