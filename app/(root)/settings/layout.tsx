@@ -31,9 +31,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
         <nav className="w-[240px] shrink-0 border-r border-[#DFE1E6] dark:border-[#2C333A] bg-[#FAFBFC] dark:bg-[#161A1D] py-4 px-3 space-y-1 overflow-y-auto">
           {settingsNav.map((item) => {
             const Icon = item.icon;
-            const isActive = item.exact
-              ? pathname === item.href
-              : pathname.startsWith(item.href);
+            const isActive = pathname.startsWith(item.href);
 
             if (item.disabled) {
               return (
