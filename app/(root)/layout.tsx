@@ -72,7 +72,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         />
       )}
 
-      {/* SIDEBAR - Hidden on mobile, visible on lg+ */}
+      {/* SIDEBAR */}
       <aside
         className={`
           fixed inset-y-0 left-0 z-50 flex flex-col
@@ -84,7 +84,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           ${collapsed ? 'w-[68px]' : 'w-[260px]'}
         `}
       >
-        {/* TOP - Logo & Close */}
+        {/* TOP - Logo & Collapse */}
         <div className="h-14 flex items-center justify-between px-4 border-b border-[#DFE1E6] dark:border-[#2C333A]">
           {!collapsed && (
             <Link href="/home" className="text-base font-bold text-[#172B4D] dark:text-white truncate hover:text-[#0052CC] dark:hover:text-[#579DFF] transition-colors">
@@ -92,25 +92,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
             </Link>
           )}
           <button
-            onClick={() => {
-              if (mobileMenuOpen) setMobileMenuOpen(false);
-              else setCollapsed(!collapsed);
-            }}
+            onClick={() => setCollapsed(!collapsed)}
             className={`
               p-2 rounded hover:bg-[#EBECF0] dark:hover:bg-[#2C333A]
               text-[#626F86] dark:text-[#8C9BAB] hover:text-[#172B4D] dark:hover:text-white
-              transition-colors lg:block
-              ${mobileMenuOpen ? '' : collapsed ? 'mx-auto hidden' : 'ml-auto hidden'}
+              transition-colors hidden lg:block
+              ${collapsed ? 'mx-auto' : 'ml-auto'}
             `}
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : collapsed ? <ChevronsRight className="w-5 h-5" /> : <ChevronsLeft className="w-5 h-5" />}
-          </button>
-          {/* Mobile close button */}
-          <button
-            onClick={() => setMobileMenuOpen(false)}
-            className="p-2 rounded hover:bg-[#EBECF0] dark:hover:bg-[#2C333A] text-[#626F86] dark:text-[#8C9BAB] lg:hidden"
-          >
-            <X className="w-5 h-5" />
+            {collapsed ? <ChevronsRight className="w-5 h-5" /> : <ChevronsLeft className="w-5 h-5" />}
           </button>
         </div>
 
