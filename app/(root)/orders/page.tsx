@@ -152,7 +152,10 @@ export default function KasirPage() {
       const response = await axios.post('/api/transactions', { items, paymentAmount, changeAmount, discountAmount });
       if (response.status === 201) {
         if (isHutang) {
-          try { await axios.post('/api/debts', { customerName: hutangCustomerName, amount: total, transactionId: response.data.id, notes: hutangNotes }); } catch (e) { console.error('Failed to create debt:', e); }
+          const debtAmount = Math.max(0, total - paymentAmount);
+          if (debtAmount > 0) {
+            try { await axios.post('/api/debts', { customerName: hutangCustomerName, amount: debtAmount, transactionId: response.data.id, notes: hutangNotes }); } catch (e) { console.error('Failed to create debt:', e); }
+          }
         }
         setReceiptData({ id: response.data.id, items: cart, total, paymentAmount, changeAmount, discountAmount, subtotal });
         setReceiptDialogOpen(true);

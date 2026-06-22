@@ -11,6 +11,9 @@ import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { useTheme } from 'next-themes';
 import Link from 'next/link';
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
 
 // Dynamically import ApexCharts to avoid SSR issues
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -247,11 +250,31 @@ export default function RecordsPage() {
     rows.push(['', '', '', '', '', '', '', '', '', '', '', 'TOTAL TRANSAKSI', sortedTransactions.length, '', '', '', '', '']);
 
     const csvContent = [headers, ...rows].map(e => e.join(',')).join('\n');
-    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `Laporan_Penjualan_${startDate}_${endDate}.csv`;
-    link.click();
+    const fileName = `Laporan_Penjualan_${startDate}_${endDate}.csv`;
+
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const base64Data = btoa(unescape(encodeURIComponent('\ufeff' + csvContent)));
+        const result = await Filesystem.writeFile({
+          path: fileName,
+          data: base64Data,
+          directory: Directory.Cache
+        });
+        await Share.share({
+          title: 'Laporan Penjualan CSV',
+          url: result.uri,
+          dialogTitle: 'Bagikan atau Simpan Laporan'
+        });
+      } catch (e) {
+        console.error('Failed to export CSV', e);
+      }
+    } else {
+      const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
+    }
   };
 
   return (

@@ -6,6 +6,9 @@ import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import { Share } from '@capacitor/share';
 import {
   Dialog,
   DialogContent,
@@ -152,11 +155,31 @@ export default function ExpensesPage() {
     });
 
     const csvContent = [headers, ...rows].map(e => e.join(',')).join('\n');
-    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = `Laporan_Pengeluaran_${format(new Date(), 'yyyy-MM-dd')}.csv`;
-    link.click();
+    const fileName = `Laporan_Pengeluaran_${format(new Date(), 'yyyy-MM-dd')}.csv`;
+
+    if (Capacitor.isNativePlatform()) {
+      try {
+        const base64Data = btoa(unescape(encodeURIComponent('\ufeff' + csvContent)));
+        const result = await Filesystem.writeFile({
+          path: fileName,
+          data: base64Data,
+          directory: Directory.Cache
+        });
+        await Share.share({
+          title: 'Laporan Pengeluaran CSV',
+          url: result.uri,
+          dialogTitle: 'Bagikan atau Simpan Laporan'
+        });
+      } catch (e) {
+        console.error('Failed to export CSV', e);
+      }
+    } else {
+      const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = fileName;
+      link.click();
+    }
   };
 
   const filteredExpenses = expenses.filter((e) =>
