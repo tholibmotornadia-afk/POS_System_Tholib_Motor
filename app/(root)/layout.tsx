@@ -57,7 +57,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   const isActive = (href: string) => pathname === href || (href === '/home' && pathname === '/');
 
   const bottomNavItems = navItems.filter(item =>
-    ['/home', '/orders', '/product', '/records', '/settings'].includes(item.href)
+    ['/home', '/orders', '/product', '/records', '/debts', '/settings'].includes(item.href)
   );
 
   return (
