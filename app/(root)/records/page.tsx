@@ -243,11 +243,11 @@ export default function RecordsPage() {
       .reduce((sum, t) => sum + (Number(t.totalAmount || 0) - Number(t.paymentAmount || 0)), 0);
 
     rows.push([]);
-    rows.push(['', '', '', '', '', '', '', '', '', '', '', 'TOTAL OMSET', totalRevenue, '', '', '', '', '']);
-    rows.push(['', '', '', '', '', '', '', '', '', '', '', 'TOTAL DISKON', totalDiscount, '', '', '', '', '']);
-    rows.push(['', '', '', '', '', '', '', '', '', '', '', 'TOTAL DIBAYAR', '', totalPaid, '', '', '', '']);
-    rows.push(['', '', '', '', '', '', '', '', '', '', '', 'TOTAL HUTANG', '', '', '', '', '', totalHutang]);
-    rows.push(['', '', '', '', '', '', '', '', '', '', '', 'TOTAL TRANSAKSI', sortedTransactions.length, '', '', '', '', '']);
+    rows.push(['', '', '', '', '', '', '', '', '', '', 'TOTAL OMSET', totalRevenue, '', '', '', '', '', '']);
+    rows.push(['', '', '', '', '', '', '', '', '', '', 'TOTAL DISKON', totalDiscount, '', '', '', '', '', '']);
+    rows.push(['', '', '', '', '', '', '', '', '', '', 'TOTAL DIBAYAR', totalPaid, '', '', '', '', '', '']);
+    rows.push(['', '', '', '', '', '', '', '', '', '', 'TOTAL HUTANG', totalHutang, '', '', '', '', '', '']);
+    rows.push(['', '', '', '', '', '', '', '', '', '', 'TOTAL TRANSAKSI', sortedTransactions.length, '', '', '', '', '', '']);
 
     const csvContent = [headers, ...rows].map(e => e.join(',')).join('\n');
     const fileName = `Laporan_Penjualan_${startDate}_${endDate}.csv`;
