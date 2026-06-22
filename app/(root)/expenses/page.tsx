@@ -118,7 +118,7 @@ export default function ExpensesPage() {
     }
   };
 
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
     if (expenses.length === 0) return;
 
     const headers = ['No', 'Tanggal', 'Waktu', 'Deskripsi', 'Kategori', 'Jumlah (Rp)', 'Catatan'];

@@ -132,7 +132,7 @@ export default function RecordsPage() {
   }, [transactions]);
 
   // Export to CSV
-  const handleExport = () => {
+  const handleExport = async () => {
     if (transactions.length === 0) return;
 
     // CSV Header sesuai standar POS
