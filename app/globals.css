@@ -187,12 +187,18 @@
   @apply !inline-flex gap-1.5;
 }
 
-.apexcharts-tooltip.apexcharts-theme-light {
-  @apply !border-border !bg-card;
+.apexcharts-tooltip.apexcharts-theme-light,
+.apexcharts-tooltip.apexcharts-theme-dark {
+  @apply !border-border !bg-card !text-foreground;
 }
 
-.apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
-  @apply !border-border !bg-muted;
+.apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title,
+.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-title {
+  @apply !border-border !bg-muted !text-foreground;
+}
+
+.apexcharts-tooltip-text {
+  @apply !text-foreground;
 }
 
 .apexcharts-xaxistooltip,
