@@ -287,17 +287,11 @@ export default function ProductList() {
                           if (foundBrand !== activeBrand) {
                             ignoreBrandChangeClearRef.current = true;
                             setActiveBrand(foundBrand);
-                          } else {
-                            fetchProducts(true);
                           }
-                        } else {
-                          fetchProducts(true);
                         }
                       } catch {
-                        fetchProducts(true);
+                        // fail silently, normal search will handle it
                       }
-                    } else {
-                      fetchProducts(true);
                     }
                   }
                 }}
