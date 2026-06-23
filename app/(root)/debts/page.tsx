@@ -162,13 +162,13 @@ export default function DebtsPage() {
             <table className="w-full text-base text-left">
               <thead className="bg-[#F4F5F7] dark:bg-[#1D2125] text-[#44546F] dark:text-[#9FADBC] text-xs uppercase font-bold border-b border-[#DFE1E6] dark:border-[#2C333A] sticky top-0 z-10">
                 <tr>
-                  <th className="px-6 py-4 w-[20%]">Pelanggan</th>
+                  <th className="px-6 py-4 w-[16%]">Pelanggan</th>
                   <th className="px-6 py-4 w-[14%]">No. Transaksi</th>
-                  <th className="px-6 py-4 w-[16%]">Tanggal</th>
-                  <th className="px-6 py-4 text-right w-[16%]">Jumlah</th>
+                  <th className="px-6 py-4 w-[14%]">Tanggal</th>
+                  <th className="px-6 py-4 text-right w-[14%]">Jumlah</th>
                   <th className="px-6 py-4 text-center w-[12%]">Status</th>
-                  <th className="px-6 py-4 w-[18%]">Catatan</th>
-                  <th className="px-6 py-4 w-12"></th>
+                  <th className="px-6 py-4 w-[16%]">Catatan</th>
+                  <th className="px-6 py-4 w-[14%] text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#DFE1E6] dark:divide-[#2C333A]">
@@ -221,42 +221,46 @@ export default function DebtsPage() {
                           </span>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-sm text-[#626F86] dark:text-[#8C9BAB] truncate max-w-[200px]">
+                      <td className="px-6 py-4 text-sm text-[#626F86] dark:text-[#8C9BAB] truncate max-w-[150px]">
                         {debt.notes || '-'}
                       </td>
-                      <td className="px-6 py-4 text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8 text-[#626F86] dark:text-[#8C9BAB] hover:text-[#172B4D] dark:hover:text-white hover:bg-[#EBECF0] dark:hover:bg-[#3D4449]">
-                              <MoreHorizontal className="w-4 h-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-48 bg-white dark:bg-[#22272B] border-[#DFE1E6] dark:border-[#2C333A]">
-                            <DropdownMenuLabel className="text-[#626F86] dark:text-[#8C9BAB]">Aksi</DropdownMenuLabel>
-                            <DropdownMenuItem
-                              onClick={() => router.push(`/records/${debt.transaction.id}`)}
-                              className="cursor-pointer focus:bg-[#EBECF0] dark:focus:bg-[#3D4449]"
-                            >
-                              <Eye className="w-4 h-4 mr-2" />
-                              Lihat Transaksi
-                            </DropdownMenuItem>
-                            {!debt.isPaid && (
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => router.push(`/records/${debt.transaction.id}`)}
+                            className="text-[#0052CC] border-[#0052CC] hover:bg-[#E9F2FF] dark:text-[#579DFF] dark:border-[#579DFF] dark:hover:bg-[#1C2B41] h-8 text-xs font-semibold px-3"
+                          >
+                            <Eye className="w-3.5 h-3.5 mr-1.5" />
+                            Detail
+                          </Button>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-[#626F86] dark:text-[#8C9BAB] hover:text-[#172B4D] dark:hover:text-white hover:bg-[#EBECF0] dark:hover:bg-[#3D4449]">
+                                <MoreHorizontal className="w-4 h-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="w-48 bg-white dark:bg-[#22272B] border-[#DFE1E6] dark:border-[#2C333A]">
+                              <DropdownMenuLabel className="text-[#626F86] dark:text-[#8C9BAB]">Opsi Lainnya</DropdownMenuLabel>
+                              {!debt.isPaid && (
+                                <DropdownMenuItem
+                                  onClick={() => setMarkPaidId(debt.id)}
+                                  className="cursor-pointer focus:bg-[#EBECF0] dark:focus:bg-[#3D4449]"
+                                >
+                                  Tandai Lunas
+                                </DropdownMenuItem>
+                              )}
+                              <DropdownMenuSeparator className="bg-[#DFE1E6] dark:bg-[#3D4449]" />
                               <DropdownMenuItem
-                                onClick={() => setMarkPaidId(debt.id)}
-                                className="cursor-pointer focus:bg-[#EBECF0] dark:focus:bg-[#3D4449]"
+                                onClick={() => setDeleteId(debt.id)}
+                                className="text-[#DE350B] focus:text-[#DE350B] focus:bg-[#FFEBE6] dark:focus:bg-[#4A1A1A] cursor-pointer"
                               >
-                                Tandai Lunas
+                                Hapus
                               </DropdownMenuItem>
-                            )}
-                            <DropdownMenuSeparator className="bg-[#DFE1E6] dark:bg-[#3D4449]" />
-                            <DropdownMenuItem
-                              onClick={() => setDeleteId(debt.id)}
-                              className="text-[#DE350B] focus:text-[#DE350B] focus:bg-[#FFEBE6] dark:focus:bg-[#4A1A1A] cursor-pointer"
-                            >
-                              Hapus
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
                       </td>
                     </tr>
                   ))
