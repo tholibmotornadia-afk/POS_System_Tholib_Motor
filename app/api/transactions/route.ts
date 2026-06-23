@@ -131,15 +131,14 @@ export const POST = async (request: Request) => {
             },
           });
 
-          let product = await tx.product.findUnique({ where: { productId: item.id } });
-          if (!product) {
-            product = await tx.product.create({
-              data: {
-                productId: item.id,
-                sellprice: productStock.sellPrice,
-              },
-            });
-          }
+          const product = await tx.product.upsert({
+            where: { productId: item.id },
+            update: {},
+            create: {
+              productId: item.id,
+              sellprice: productStock.sellPrice,
+            },
+          });
 
           await tx.onSaleProduct.create({
             data: {
@@ -162,7 +161,7 @@ export const POST = async (request: Request) => {
         where: { id: transaction.id },
         data: { totalAmount: finalTotal },
       });
-    });
+    }, { timeout: 30000, maxWait: 15000 });
 
     const serialized = {
       ...result,
