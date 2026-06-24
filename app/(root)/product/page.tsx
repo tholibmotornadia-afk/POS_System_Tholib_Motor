@@ -88,7 +88,7 @@ export default function ProductList() {
     }
   });
 
-  const masterCategories = data?.masterCategories || [];
+  const masterCategories: string[] = data?.masterCategories || [];
   const totalCount = data?.totalCount || 0;
   const hasMore = data?.pagination?.hasMore || false;
 
