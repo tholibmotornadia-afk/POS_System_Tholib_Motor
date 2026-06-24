@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import useSWR from 'swr';
 import dynamic from 'next/dynamic';
 import { Calendar, Download, ShoppingBag, Eye, TrendingUp, Banknote, Package, ChevronRight, Search, FileText, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -18,11 +19,10 @@ import { Share } from '@capacitor/share';
 // Dynamically import ApexCharts to avoid SSR issues
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
+const fetcher = (url: string) => axios.get(url).then(res => res.data);
+
 export default function RecordsPage() {
   const [activeTab, setActiveTab] = useState('laporan');
-  const [loading, setLoading] = useState(true);
-  const [transactions, setTransactions] = useState<any[]>([]);
-  const [profitData, setProfitData] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   const [startDate, setStartDate] = useState(() => {
@@ -32,31 +32,15 @@ export default function RecordsPage() {
   });
   const [endDate, setEndDate] = useState(() => new Date().toISOString().split('T')[0]);
 
-  // Fetch data
-  const fetchData = async () => {
-    try {
-      setLoading(true);
+  const startIso = new Date(startDate + 'T00:00:00').toISOString();
+  const endIso = new Date(endDate + 'T23:59:59').toISOString();
 
-      const start = new Date(startDate + 'T00:00:00');
-      const end = new Date(endDate + 'T23:59:59');
+  const { data: transData, isLoading: transLoading } = useSWR(`/api/transactions?limit=200`, fetcher);
+  const { data: profitRes, isLoading: profitLoading } = useSWR(`/api/profit?start=${startIso}&end=${endIso}`, fetcher);
 
-      const [transRes, profitRes] = await Promise.all([
-        axios.get(`/api/transactions?limit=200`),
-        axios.get(`/api/profit?start=${start.toISOString()}&end=${end.toISOString()}`)
-      ]);
-
-      setTransactions(transRes.data.transactions || []);
-      setProfitData(profitRes.data.groupedData || []);
-    } catch (error) {
-      console.error('Error fetching records:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, [startDate, endDate]);
+  const loading = transLoading || profitLoading;
+  const transactions = transData?.transactions || [];
+  const profitData = profitRes?.groupedData || [];
 
   // Statistics calculation
   const stats = useMemo(() => {

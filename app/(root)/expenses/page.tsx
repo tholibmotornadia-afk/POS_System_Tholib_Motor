@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import useSWR from 'swr';
+import React, { useState } from 'react';
 import axios from '@/lib/axios';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -55,9 +56,9 @@ const categoryLabels: Record<string, string> = {
   LAINNYA: 'Lainnya',
 };
 
+const fetcher = (url: string) => axios.get(url).then(res => res.data);
+
 export default function ExpensesPage() {
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [filterCategory, setFilterCategory] = useState('ALL');
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -66,23 +67,11 @@ export default function ExpensesPage() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
-  const fetchExpenses = async () => {
-    try {
-      setLoading(true);
-      const params = new URLSearchParams();
-      if (filterCategory !== 'ALL') params.set('category', filterCategory);
-      const response = await axios.get(`/api/expenses?${params.toString()}`);
-      setExpenses(response.data.expenses);
-    } catch (error) {
-      console.error('Error fetching expenses:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchExpenses();
-  }, [filterCategory]);
+  const params = new URLSearchParams();
+  if (filterCategory !== 'ALL') params.set('category', filterCategory);
+  
+  const { data, isLoading: loading, mutate } = useSWR(`/api/expenses?${params.toString()}`, fetcher);
+  const expenses: Expense[] = data?.expenses || [];
 
   const handleSubmit = async () => {
     if (!form.description.trim() || !form.amount) return;
@@ -96,7 +85,7 @@ export default function ExpensesPage() {
       });
       setDialogOpen(false);
       setForm({ description: '', amount: '', category: 'LAINNYA', notes: '' });
-      fetchExpenses();
+      mutate();
     } catch (error) {
       alert('Gagal menambah pengeluaran');
     } finally {
@@ -110,7 +99,7 @@ export default function ExpensesPage() {
       setDeleting(true);
       await axios.delete(`/api/expenses/${deleteId}`);
       setDeleteId(null);
-      fetchExpenses();
+      mutate();
     } catch (error) {
       alert('Gagal menghapus pengeluaran');
     } finally {

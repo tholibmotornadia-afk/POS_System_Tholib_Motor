@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import axios from '@/lib/axios';
+import useSWR from 'swr';
 import { Search, Filter, Plus, MoreHorizontal, AlertTriangle, ChevronDown, X, Trash2, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -44,17 +44,16 @@ interface Product {
 const brands = ['HONDA', 'YAMAHA', 'KAWASAKI', 'SUZUKI'] as const;
 type Brand = typeof brands[number];
 
+const fetcher = (url: string) => axios.get(url).then(res => res.data);
+
 export default function ProductList() {
   const [activeBrand, setActiveBrand] = useState<Brand>('HONDA');
-  const [products, setProducts] = useState<Product[]>([]);
-  const [masterCategories, setMasterCategories] = useState<string[]>([]);
   const [selectedMasterCategory, setSelectedMasterCategory] = useState<string>('');
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [totalCount, setTotalCount] = useState(0);
+  
   const [offset, setOffset] = useState(0);
-  const [hasMore, setHasMore] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [productsList, setProductsList] = useState<Product[]>([]);
+  
   const searchRef = useRef<HTMLInputElement>(null);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const ignoreBrandChangeClearRef = useRef<boolean>(false);
@@ -72,6 +71,44 @@ export default function ProductList() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const LIMIT = 50;
+  
+  const params = new URLSearchParams({
+    brand: activeBrand,
+    limit: LIMIT.toString(),
+    offset: '0',
+  });
+  if (searchQuery) params.set('search', searchQuery);
+  if (selectedMasterCategory) params.set('masterCategory', selectedMasterCategory);
+
+  const { data, isLoading: loading, mutate } = useSWR(`/api/product?${params}`, fetcher, {
+    onSuccess: (data) => {
+      setProductsList(data.products || []);
+      setOffset(LIMIT);
+    }
+  });
+
+  const masterCategories = data?.masterCategories || [];
+  const totalCount = data?.totalCount || 0;
+  const hasMore = data?.pagination?.hasMore || false;
+
+  const [loadingMore, setLoadingMore] = useState(false);
+  
+  const fetchMore = async () => {
+    if (!hasMore || loadingMore) return;
+    setLoadingMore(true);
+    try {
+      const moreParams = new URLSearchParams(params);
+      moreParams.set('offset', offset.toString());
+      moreParams.set('skipCount', 'true');
+      const res = await axios.get(`/api/product?${moreParams}`);
+      setProductsList(prev => [...prev, ...res.data.products]);
+      setOffset(prev => prev + LIMIT);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   const handleEdit = (product: Product) => {
     setSelectedProduct(product);
@@ -89,55 +126,8 @@ export default function ProductList() {
       title: 'Berhasil',
       message: selectedProduct ? 'Produk berhasil diperbarui.' : 'Produk baru berhasil ditambahkan.'
     });
-    fetchProducts(true);
+    mutate();
   };
-
-  // Fetch products
-  const fetchProducts = React.useCallback(async (reset = true) => {
-    if (reset) {
-      setLoading(true);
-      setOffset(0);
-    } else {
-      setLoadingMore(true);
-    }
-
-    try {
-      const params = new URLSearchParams({
-        brand: activeBrand,
-        limit: LIMIT.toString(),
-        offset: reset ? '0' : offset.toString(),
-      });
-
-      if (searchQuery) params.set('search', searchQuery);
-      if (selectedMasterCategory) params.set('masterCategory', selectedMasterCategory);
-
-      if (!reset) params.set('skipCount', 'true');
-
-      const response = await axios.get(`/api/product?${params}`);
-      const data = response.data;
-
-      if (reset) {
-        setProducts(data.products || []);
-        setMasterCategories(data.masterCategories || []);
-      } else {
-        setProducts((prev) => [...prev, ...data.products]);
-      }
-
-      setTotalCount(data.totalCount);
-      setHasMore(data.pagination.hasMore);
-      setOffset((prev) => (reset ? LIMIT : prev + LIMIT));
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  }, [activeBrand, searchQuery, selectedMasterCategory, offset]);
-
-  // Initial fetch & Search trigger
-  useEffect(() => {
-    fetchProducts(true);
-  }, [searchQuery, selectedMasterCategory]);
 
   // Fetch when brand changes
   useEffect(() => {
@@ -148,7 +138,6 @@ export default function ProductList() {
       setSearchQuery('');
       if (searchRef.current) searchRef.current.value = '';
     }
-    fetchProducts(true);
   }, [activeBrand]);
 
   // Delete handler
@@ -164,14 +153,14 @@ export default function ProductList() {
       await axios.delete(`/api/product/${deleteId}`);
 
       // Update UI
-      setProducts(prev => prev.filter(p => p.id !== deleteId));
+      setProductsList(prev => prev.filter(p => p.id !== deleteId));
       setDeleteId(null);
       setSuccessAlert({
         open: true,
         title: 'Produk Dihapus',
         message: 'Produk berhasil dihapus dari inventaris.'
       });
-      fetchProducts(true); // Refresh data
+      mutate(); // Refresh data
     } catch (error: any) {
       console.error('Delete error:', error);
       setDeleteId(null);
@@ -336,7 +325,7 @@ export default function ProductList() {
             onScroll={(e) => {
               const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
               if (scrollHeight - scrollTop <= clientHeight + 50 && hasMore && !loadingMore && !loading) {
-                fetchProducts(false);
+                fetchMore();
               }
             }}
           >
@@ -361,7 +350,7 @@ export default function ProductList() {
                       </td>
                     </tr>
                   ))
-                ) : products.length === 0 ? (
+                ) : productsList.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="p-12 text-center text-[#626F86] dark:text-[#8C9BAB]">
                       <div className="flex flex-col items-center justify-center">
@@ -373,7 +362,7 @@ export default function ProductList() {
                   </tr>
                 ) : (
                   <>
-                    {products.map((product) => (
+                    {productsList.map((product) => (
                       <tr
                         key={product.id}
                         className="hover:bg-[#F4F5F7] dark:hover:bg-[#2C333A] transition-colors group"

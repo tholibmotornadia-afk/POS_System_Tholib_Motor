@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import useSWR from 'swr';
+import React, { useState } from 'react';
 import axios from '@/lib/axios';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
@@ -48,9 +49,9 @@ const statusLabels: Record<string, string> = {
   paid: 'Lunas',
 };
 
+const fetcher = (url: string) => axios.get(url).then(res => res.data);
+
 export default function DebtsPage() {
-  const [debts, setDebts] = useState<Debt[]>([]);
-  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'unpaid' | 'paid'>('unpaid');
   const [search, setSearch] = useState('');
   const [markPaidId, setMarkPaidId] = useState<string | null>(null);
@@ -58,23 +59,11 @@ export default function DebtsPage() {
   const [processing, setProcessing] = useState(false);
   const router = useRouter();
 
-  const fetchDebts = async () => {
-    try {
-      setLoading(true);
-      const params = new URLSearchParams();
-      if (filter !== 'all') params.set('status', filter);
-      const response = await axios.get(`/api/debts?${params.toString()}`);
-      setDebts(response.data.debts);
-    } catch (error) {
-      console.error('Error fetching debts:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchDebts();
-  }, [filter]);
+  const params = new URLSearchParams();
+  if (filter !== 'all') params.set('status', filter);
+  
+  const { data, isLoading: loading, mutate } = useSWR(`/api/debts?${params.toString()}`, fetcher);
+  const debts: Debt[] = data?.debts || [];
 
   const handleMarkPaid = async () => {
     if (!markPaidId) return;
@@ -82,7 +71,7 @@ export default function DebtsPage() {
       setProcessing(true);
       await axios.patch(`/api/debts/${markPaidId}`, { isPaid: true });
       setMarkPaidId(null);
-      fetchDebts();
+      mutate();
     } catch (error) {
       alert('Gagal menandai hutang sebagai lunas');
     } finally {
@@ -96,7 +85,7 @@ export default function DebtsPage() {
       setProcessing(true);
       await axios.delete(`/api/debts/${deleteId}`);
       setDeleteId(null);
-      fetchDebts();
+      mutate();
     } catch (error) {
       alert('Gagal menghapus catatan hutang');
     } finally {
