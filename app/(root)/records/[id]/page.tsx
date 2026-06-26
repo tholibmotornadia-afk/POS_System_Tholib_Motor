@@ -65,7 +65,7 @@ export default function DetailPage({ params }: { params: { id: string } }) {
       }
 
       const dataToPrint = await buildReceiptBase64({
-        storeName: 'Tholib Motor',
+        storeName: 'Nadia Tholib Motor',
         storeSubtitle: 'Bengkel Sepeda Motor',
         storeAddress: 'Jl. Tebu No.20, RT.13/RW.7, Cakung Bar., Kec. Cakung, Kota Jakarta Timur 13910',
         storePhone: '0821-1247-8537',

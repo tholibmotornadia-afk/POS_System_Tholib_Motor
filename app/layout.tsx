@@ -8,13 +8,13 @@ import type { Metadata, Viewport } from 'next';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'POS Tholib Motor',
+  title: 'Nadia Tholib Motor',
   description: 'Enterprise Point of Sale',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'POS TM',
+    title: 'NTM',
   },
   formatDetection: {
     telephone: false,

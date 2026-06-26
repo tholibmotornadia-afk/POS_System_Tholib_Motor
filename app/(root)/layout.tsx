@@ -88,7 +88,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <div className="h-14 flex items-center justify-between px-4 border-b border-[#DFE1E6] dark:border-[#2C333A]">
           {!collapsed && (
             <Link href="/home" className="text-base font-bold text-[#172B4D] dark:text-white truncate hover:text-[#0052CC] dark:hover:text-[#579DFF] transition-colors">
-              Tholib Motor
+              Nadia Tholib Motor
             </Link>
           )}
           <button
@@ -161,7 +161,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           >
             <Menu className="w-5 h-5" />
           </button>
-          <Link href="/home" className="text-sm font-bold text-[#172B4D] dark:text-white">Tholib Motor</Link>
+          <Link href="/home" className="text-sm font-bold text-[#172B4D] dark:text-white">Nadia Tholib Motor</Link>
           <button
             onClick={toggleTheme}
             className="p-2 -mr-2 rounded hover:bg-[#EBECF0] dark:hover:bg-[#2C333A] text-[#626F86] dark:text-[#8C9BAB]"

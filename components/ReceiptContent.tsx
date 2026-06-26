@@ -36,7 +36,7 @@ export const ReceiptContent = forwardRef<HTMLDivElement, ReceiptContentProps>(({
                 <CardHeader className="text-center pb-4 border-b border-dashed border-[#DFE1E6] dark:border-[#2C333A] px-4">
                     <div className="space-y-1">
                         <h2 className="text-lg font-black text-[#172B4D] dark:text-white uppercase tracking-tighter">
-                            Tholib Motor
+                            Nadia Tholib Motor
                         </h2>
                         <p className="text-[9px] text-[#626F86] dark:text-[#8C9BAB] leading-tight">
                             Bengkel Sepeda Motor<br />
